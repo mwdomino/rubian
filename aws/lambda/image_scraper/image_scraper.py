@@ -32,7 +32,6 @@ def handler(event, context):
   for major_version in MAJOR_VERSIONS:
     all_versions = fetch_minor_versions(major_version)
     for minor_version in all_versions:
-      major_version = minor_version.rsplit('.', 1)[0]
       message = { "major_version": major_version, "minor_version": minor_version }
       sqs_client.send_message(
           QueueUrl=queue_url,
