@@ -3,17 +3,16 @@ FROM debian:buster
 RUN apt update && \
     apt upgrade -y && \
     apt install --no-install-recommends -y \
-    wget \
-    gcc \
-    make \
     automake \
     ca-certificates \
+    gcc \
     git \
     libssl-dev \
     libreadline-dev \
+    make \
+    wget \
     zlib1g-dev
 
-# Clean Cache and such here
 RUN mkdir -p /tmp/ruby-build
 WORKDIR /tmp/ruby-build
 ARG MINOR_VERSION
@@ -27,6 +26,5 @@ RUN sh -c './configure'
 RUN make && \
     make install
 
-# Remove build folder and apt cache
 RUN rm -rf /tmp/ruby-build && \
     rm -rf /var/lib/apt/lists/*
