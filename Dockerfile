@@ -7,6 +7,7 @@ RUN apt update && \
     gcc \
     make \
     automake \
+    ca-certificates \
     git \
     libssl-dev \
     libreadline-dev \
