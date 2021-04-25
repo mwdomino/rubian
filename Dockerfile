@@ -22,7 +22,7 @@ RUN wget https://cache.ruby-lang.org/pub/ruby/$MAJOR_VERSION/ruby-$MINOR_VERSION
 RUN tar xvzf ruby-$MINOR_VERSION.tar.gz
 
 WORKDIR /tmp/ruby-build/ruby-$MINOR_VERSION
-RUN sh -c './configure'
+RUN sh -c './configure --disable-install-doc'
 RUN make && \
     make install
 
