@@ -12,3 +12,5 @@ RUN apt update && \
     make \
     wget \
     zlib1g-dev
+
+RUN rm -rf /var/lib/apt/lists/*
