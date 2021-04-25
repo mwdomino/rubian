@@ -257,7 +257,7 @@ resource "aws_sqs_queue" "rubian_build_queue" {
   delay_seconds             = 0
   message_retention_seconds = 7200
   receive_wait_time_seconds = 10
-  visibility_timeout_seconds = 1500
+  visibility_timeout_seconds = 600
 }
 
 # EC2 ASG
