@@ -6,10 +6,7 @@ process will automatically build and push new versions as the debian:latest
 container receives updates.
 
 #### Technical Details
-
-``` sh
-diagram goes here..
-```
+![diagram](https://github.com/mwdomino/rubian/blob/master/diagram.png?raw=true)
 
 The entire build process happens on AWS with an attempt to be as serverless as
 possible. All files required to replicate the deployment are available in the `aws/`
