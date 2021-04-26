@@ -1,0 +1,6 @@
+/aws/.terraform/
+/aws/terraform.tfvars
+*.tfstate
+*.swp
+/aws/.terraform.lock.hcl
+/aws/terraform.tfstate.backup
