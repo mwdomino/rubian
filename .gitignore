@@ -4,3 +4,4 @@
 *.swp
 /aws/.terraform.lock.hcl
 /aws/terraform.tfstate.backup
+*.tfvars
