@@ -1,3 +1,4 @@
+# General
 terraform {
   required_providers {
     aws = {
@@ -20,12 +21,18 @@ resource "aws_s3_bucket" "rubian_base_bucket" {
   versioning {
     enabled = true
   }
+}
 
-  tags = {
-    App         = "Rubian"
+resource "aws_s3_bucket" "rubian_bucket" {
+  bucket = "rubian-bucket-mwdomino"
+  acl    = "private"
+
+  versioning {
+    enabled = true
   }
 }
 
+# SQS
 resource "aws_sqs_queue" "rubian_build_queue" {
   name                      = "rubian_build_queue"
   delay_seconds             = 0
@@ -43,6 +50,42 @@ resource "aws_cloudwatch_log_stream" "rubian-build-logs" {
   name           = "rubian-build-logs"
   log_group_name = aws_cloudwatch_log_group.rubian.name
 }
+
+# pip install in lambda folder
+resource "null_resource" "pip_install" {
+  triggers = {
+    src_hash = "#{path.module}/lambda/requirements.txt"
+  }
+
+  provisioner "local-exec" {
+    command = "pip3 install -r ${path.module}/lambda/requirements.txt -t ${path.module}/lambda/"
+  }
+}
+
+# zip it up
+data "archive_file" "lambda_zip" {
+  type = "zip"
+  source_dir  = "${path.module}/lambda"
+  output_path = "${path.module}/lambda/lambda.zip"
+  excludes    = [ "${path.module}/lambda/lambda.zip" ]
+
+  depends_on = [null_resource.pip_install]
+}
+
+# upload to s3 - rubian_bucket
+resource "aws_s3_bucket_object" "lambda_object" {
+  bucket = aws_s3_bucket.rubian_bucket.bucket
+  key    = "lambda.zip"
+  source = data.archive_file.lambda_zip.output_path
+
+  etag = filemd5(data.archive_file.lambda_zip.output_path)
+}
+
+# create lambda image_checker:
+#     lambda.image_checker_handler
+
+# create lambda image_scraper:
+#     lambda.image_scraper_handler
 
 # Launch Template
 #resource "aws_launch_template" "foo" {
