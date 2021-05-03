@@ -34,6 +34,16 @@ resource "aws_sqs_queue" "rubian_build_queue" {
   visibility_timeout_seconds = 600
 }
 
+# Logging
+resource "aws_cloudwatch_log_group" "rubian" {
+  name = "rubian"
+}
+
+resource "aws_cloudwatch_log_stream" "rubian-build-logs" {
+  name           = "rubian-build-logs"
+  log_group_name = aws_cloudwatch_log_group.rubian.name
+}
+
 # Launch Template
 #resource "aws_launch_template" "foo" {
 #  name = "foo"
