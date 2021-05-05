@@ -5,3 +5,7 @@
 /aws/.terraform.lock.hcl
 /aws/terraform.tfstate.backup
 *.tfvars
+/lambda/**/
+/lambda/lambda.zip
+/.terraform.lock.hcl
+/.terraform/
