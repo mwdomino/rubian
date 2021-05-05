@@ -1,11 +1,6 @@
 # Lambda RubyImageScraper
 #   scrapes ruby-lang.org for releases
 #   for each release, adds message to SQS queue rubian-build-queue
-data "archive_file" "image_scraper_payload" {
-  type          = "zip"
-  output_path   = "/tmp/image_scraper_payload.zip"
-  source_dir = "lambda/image_scraper/"
-}
 
 resource "aws_iam_role_policy" "image_scraper_policy" {
   name     = "image_scraper_policy"
@@ -28,7 +23,7 @@ resource "aws_iam_role_policy" "image_scraper_policy" {
 }
 
 resource "aws_iam_role" "image_scraper_role" {
-  name = "image_scraper_role"
+  name = "image_scraper_iam_role"
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -58,11 +53,11 @@ resource "aws_iam_role_policy_attachment" "lambda_logs_scraper" {
 }
 
 resource "aws_lambda_function" "image_scraper_function" {
-  filename      = data.archive_file.image_scraper_payload.output_path
+  filename      = data.archive_file.lambda_zip.output_path
   function_name = "image_scraper_function"
   role          = aws_iam_role.image_scraper_role.arn
-  handler       = "image_scraper.handler"
-  source_code_hash = data.archive_file.image_scraper_payload.output_base64sha256
+  handler       = "lambda.image_scraper_handler"
+  source_code_hash = data.archive_file.lambda_zip.output_base64sha256
   runtime = "python3.8"
   timeout = 30
 

@@ -17,6 +17,7 @@ provider "aws" {
 resource "aws_s3_bucket" "rubian_base_bucket" {
   bucket = "rubian-base-version"
   acl    = "private"
+  force_destroy = true
 
   versioning {
     enabled = true
@@ -26,6 +27,7 @@ resource "aws_s3_bucket" "rubian_base_bucket" {
 resource "aws_s3_bucket" "rubian_bucket" {
   bucket = "rubian-bucket-mwdomino"
   acl    = "private"
+  force_destroy = true
 
   versioning {
     enabled = true
@@ -78,7 +80,7 @@ resource "aws_s3_bucket_object" "lambda_object" {
   key    = "lambda.zip"
   source = data.archive_file.lambda_zip.output_path
 
-  etag = filemd5(data.archive_file.lambda_zip.output_path)
+  etag = data.archive_file.lambda_zip.output_md5
 }
 
 # create lambda image_checker:
