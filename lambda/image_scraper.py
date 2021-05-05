@@ -1,17 +1,10 @@
 import boto3
+import env_vars
 import json
-import os
 import re
 import requests
 
-MAJOR_VERSIONS = [
-    "2.3",
-    "2.4",
-    "2.5",
-    "2.6",
-    "2.7",
-    "3.0"
-]
+env = env_vars.Environment()
 
 def fetch_minor_versions(major_version):
   all_minor_versions = []
@@ -24,16 +17,11 @@ def fetch_minor_versions(major_version):
       all_minor_versions.append(version)
   return all_minor_versions
 
-
-def handler(event, context):
-  queue_url = os.environ.get('RUBIAN_BUILD_QUEUE')
+def add_build_to_queue(major_version, minor_version):
   sqs_client = boto3.client("sqs", region_name="us-east-1")
+  message = { "major_version": major_version, "minor_version": minor_version }
 
-  for major_version in MAJOR_VERSIONS:
-    all_versions = fetch_minor_versions(major_version)
-    for minor_version in all_versions:
-      message = { "major_version": major_version, "minor_version": minor_version }
-      sqs_client.send_message(
-          QueueUrl=queue_url,
-          MessageBody=json.dumps(message)
-      )
+  sqs_client.send_message(
+    QueueUrl=env.rubian_build_queue,
+    MessageBody=json.dumps(message)
+  )
