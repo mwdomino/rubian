@@ -1,11 +1,12 @@
 import boto3
-import env_vars as env
+import env_vars
 import requests
 
+env = env_vars.Environment()
+
 def get_digest():
-  env = env.Environment()
-  headers = { "Accept": "application/vnd.docker.distribution.manifest.list.v2+json" }
-  auth = auth(env.docker_hub_username, env.docker_hub_password)
+  headers = { "Accept": "application/vnd.docker.distribution.manifest.list.v2+json, application/json" }
+  auth = (env.docker_hub_username, env.docker_hub_password)
 
   token = requests.get(
     'https://auth.docker.io/token?scope=repository:library/debian:pull&service=registry.docker.io',
@@ -19,6 +20,7 @@ def get_digest():
 
 def create_or_update_stored_sha(current_sha):
   current_sha = current_sha.strip()
+  print(current_sha)
 
   try:
     s3 = boto3.resource('s3')

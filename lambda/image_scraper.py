@@ -1,7 +1,10 @@
 import boto3
-import env_vars as env
+import env_vars
+import json
 import re
 import requests
+
+env = env_vars.Environment()
 
 def fetch_minor_versions(major_version):
   all_minor_versions = []
@@ -15,7 +18,6 @@ def fetch_minor_versions(major_version):
   return all_minor_versions
 
 def add_build_to_queue(major_version, minor_version):
-  env = env.Environment()
   sqs_client = boto3.client("sqs", region_name="us-east-1")
   message = { "major_version": major_version, "minor_version": minor_version }
 
